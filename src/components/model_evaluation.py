@@ -30,7 +30,6 @@ class ModelEvaluation:
         with Path(config["model_path"]).open("rb") as file:
             model = pickle.load(file)
 
-        y_pred = model.predict(x_test)
         y_score = model.predict_proba(x_test)[:, 1]
         threshold = float(config.get("threshold", 0.5))
         y_pred = (y_score >= threshold).astype(int)
