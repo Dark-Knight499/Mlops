@@ -1,0 +1,12 @@
+[project]
+name = "mlops-churn"
+version = "0.1.0"
+description = "Reproducible telecom churn MLOps pipeline built with uv and DVC."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "dvc>=3.67.1",
+    "matplotlib>=3.10.9",
+    "pandas>=3.0.2",
+    "scikit-learn>=1.8.0",
+]

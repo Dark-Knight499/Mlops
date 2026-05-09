@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reproducible MLOps Pipeline</title>
+    <style>
+      :root {
+        --bg: #f6f8fc;
+        --card: rgba(255, 255, 255, 0.78);
+        --text: #1a2233;
+        --muted: #5a6680;
+        --primary: #3d63ff;
+        --shadow: 0 20px 40px rgba(30, 51, 120, 0.1);
+        --border: rgba(255, 255, 255, 0.65);
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: radial-gradient(circle at 0% 0%, #eef3ff 0, var(--bg) 40%), var(--bg);
+        color: var(--text);
+      }
+      .container { width: min(1120px, 92vw); margin: 0 auto; }
+      .section { padding: 5rem 0; opacity: 0; transform: translateY(18px); animation: fadeIn .8s ease forwards; }
+      .section:nth-child(2) { animation-delay: .1s; }
+      .section:nth-child(3) { animation-delay: .15s; }
+      .section:nth-child(4) { animation-delay: .2s; }
+      @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+
+      .hero { min-height: 92vh; display: grid; place-items: center; text-align: center; }
+      h1 { font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1.05; margin: 0; }
+      h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin: 0 0 1rem; }
+      p { color: var(--muted); line-height: 1.75; }
+      .lead { font-size: 1.15rem; max-width: 760px; margin: 1.2rem auto 2rem; }
+
+      .btn {
+        display: inline-block;
+        background: linear-gradient(135deg, #4b70ff, #2d5cff);
+        color: #fff;
+        padding: 0.85rem 1.4rem;
+        border-radius: 999px;
+        text-decoration: none;
+        box-shadow: var(--shadow);
+        transition: transform .25s ease, box-shadow .25s ease;
+      }
+      .btn:hover { transform: translateY(-3px); box-shadow: 0 26px 44px rgba(40, 81, 255, .24); }
+
+      .grid { display: grid; gap: 1rem; }
+      .grid-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+      .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 1.2rem 1.3rem;
+        box-shadow: var(--shadow);
+        transition: transform .25s ease;
+      }
+      .card:hover { transform: translateY(-6px); }
+
+      .label {
+        display: inline-block;
+        margin-bottom: .65rem;
+        color: #3452cd;
+        font-weight: 600;
+        font-size: .86rem;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+      }
+
+      .pipeline {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: .6rem;
+      }
+      .chip {
+        background: #ffffff;
+        border: 1px solid #e7ecff;
+        border-radius: 999px;
+        padding: .55rem .95rem;
+        font-size: .92rem;
+      }
+
+      pre {
+        margin: 0;
+        background: #0f172a;
+        color: #d7e2ff;
+        border-radius: 12px;
+        padding: 1rem;
+        overflow-x: auto;
+        font-size: .87rem;
+      }
+
+      .result { border-left: 4px solid var(--primary); }
+
+      footer { padding: 2.5rem 0 3rem; text-align: center; color: var(--muted); font-size: .95rem; }
+
+      @media (max-width: 720px) {
+        .section { padding: 3.8rem 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="hero section" id="top">
+      <div class="container">
+        <h1>Reproducible MLOps Pipeline</h1>
+        <p class="lead">Telecom churn prediction reimagined with production-grade reproducibility, elegant orchestration, and stakeholder-ready storytelling.</p>
+        <a class="btn" href="#problem">Explore Case Study ↓</a>
+      </div>
+    </section>
+
+    <section class="section" id="problem">
+      <div class="container grid grid-2">
+        <div class="card">
+          <span class="label">Problem Statement</span>
+          <h2>Telecom Churn Is a Silent Revenue Drain</h2>
+          <p>High-value customers leave due to billing friction, poor support experience, and contract dissatisfaction. Teams often react too late because model workflows are not repeatable.</p>
+        </div>
+        <div class="card">
+          <span class="label">Why MLOps</span>
+          <p>Without MLOps: ad-hoc notebooks, weak lineage, and difficult handoffs. With MLOps: reproducible runs, transparent metrics, and scalable collaboration.</p>
+          <ul>
+            <li>✅ Deterministic pipelines</li>
+            <li>✅ Versioned data/model artifacts</li>
+            <li>✅ Faster iteration with confidence</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="architecture">
+      <div class="container">
+        <div class="card">
+          <span class="label">Architecture</span>
+          <h2>Pipeline Flow</h2>
+          <div class="pipeline">
+            <span class="chip">data_ingestion</span>
+            <span>→</span>
+            <span class="chip">data_validation</span>
+            <span>→</span>
+            <span class="chip">data_preprocessing</span>
+            <span>→</span>
+            <span class="chip">feature_engineering</span>
+            <span>→</span>
+            <span class="chip">model_training</span>
+            <span>→</span>
+            <span class="chip">model_evaluation</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pipeline-breakdown">
+      <div class="container">
+        <h2>Pipeline Breakdown</h2>
+        <div class="grid grid-3">
+          <article class="card"><strong>1) Ingestion</strong><p>Generate realistic telecom behavior + churn labels.</p></article>
+          <article class="card"><strong>2) Validation</strong><p>Schema checks, null checks, binary target validation.</p></article>
+          <article class="card"><strong>3) Preprocessing</strong><p>Deduplication and stratified split for balanced evaluation.</p></article>
+          <article class="card"><strong>4) Feature Engineering</strong><p>Create behavioral features tied to churn causes.</p></article>
+          <article class="card"><strong>5) Training</strong><p>Train RandomForest and persist model artifact.</p></article>
+          <article class="card"><strong>6) Evaluation</strong><p>Metrics + feature-importance + confusion matrix.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="case-study">
+      <div class="container grid grid-2">
+        <div class="card">
+          <span class="label">Case Study Impact</span>
+          <h2>From Prediction to Retention Strategy</h2>
+          <p>Model insights reveal that churn concentrates around delayed payments and support load. This enables targeted interventions in billing and service operations.</p>
+        </div>
+        <div class="card result">
+          <span class="label">Wow Moment</span>
+          <p><strong>Feature importance makes business action obvious:</strong> the model directly maps churn risk to controllable operational levers.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="demo">
+      <div class="container grid grid-2">
+        <div class="card">
+          <span class="label">Demo Commands</span>
+          <pre>uv init --name mlops-churn --python 3.11
+uv add pandas scikit-learn dvc matplotlib
+dvc init
+dvc repro</pre>
+        </div>
+        <div class="card">
+          <span class="label">Screenshots</span>
+          <p>Placeholders:</p>
+          <ul>
+            <li>📌 Pipeline execution terminal snapshot</li>
+            <li>📌 Feature-importance plot</li>
+            <li>📌 Metrics artifact view</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="results">
+      <div class="container grid grid-3">
+        <div class="card"><span class="label">Accuracy</span><h2>0.80</h2></div>
+        <div class="card"><span class="label">F1 Score</span><h2>0.61</h2></div>
+        <div class="card"><span class="label">AUC</span><h2>0.80</h2></div>
+      </div>
+    </section>
+
+    <section class="section" id="conclusion">
+      <div class="container card" style="text-align:center;">
+        <span class="label">Conclusion</span>
+        <h2>Engineering + Product Clarity in One Delivery</h2>
+        <p>This solution demonstrates reproducibility, modular ML engineering, and a polished narrative for technical and business audiences.</p>
+        <a class="btn" href="#top">Back to Top ↑</a>
+      </div>
+    </section>
+
+    <footer>
+      Built for final submission • Python + uv + DVC • Telecom Churn Case Study
+    </footer>
+  </body>
+</html>
