@@ -42,11 +42,15 @@ class DataIngestion:
 
         frame["tenure_months"] = (frame["tenure_months"].abs() * 18 + 1).round().clip(1, 72)
         frame["monthly_charges"] = (frame["monthly_charges"].abs() * 20 + 30).round(2)
-        frame["total_charges"] = (frame["monthly_charges"] * frame["tenure_months"]).round(2)
         frame["support_tickets"] = (frame["support_tickets"].abs() * 2).round().clip(0, 8)
         frame["contract_months"] = (frame["contract_months"].abs() * 6 + 6).round().clip(1, 24)
         frame["streaming_usage_gb"] = (frame["streaming_usage_gb"].abs() * 15 + 2).round(2)
         frame["payment_delay_days"] = (frame["payment_delay_days"].abs() * 4).round().clip(0, 25)
+        frame["total_charges"] = (
+            frame["monthly_charges"]
+            * frame["tenure_months"]
+            * (1 + 0.01 * frame["support_tickets"] + 0.005 * frame["payment_delay_days"])
+        ).round(2)
         frame["service_calls_last_quarter"] = (
             frame["service_calls_last_quarter"].abs() * 2
         ).round().clip(0, 10)
