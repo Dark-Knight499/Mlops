@@ -12,15 +12,10 @@ class FeatureEngineering:
     @staticmethod
     def _transform(frame: pd.DataFrame) -> pd.DataFrame:
         transformed = frame.copy()
-        transformed["avg_charge_per_month"] = (
-            transformed["total_charges"] / (transformed["tenure_months"] + 1)
-        ).round(2)
-        transformed["support_to_tenure"] = (
-            transformed["support_tickets"] / (transformed["tenure_months"] + 1)
-        ).round(4)
-        transformed["delay_ticket_interaction"] = (
-            transformed["payment_delay_days"] * (transformed["support_tickets"] + 1)
-        )
+        safe_tenure = transformed["tenure_months"].clip(lower=1)
+        transformed["avg_charge_per_month"] = (transformed["total_charges"] / safe_tenure).round(2)
+        transformed["support_to_tenure"] = (transformed["support_tickets"] / safe_tenure).round(4)
+        transformed["delay_ticket_interaction"] = transformed["payment_delay_days"] * transformed["support_tickets"]
         return transformed
 
     def run(self, params: dict) -> dict[str, str]:
