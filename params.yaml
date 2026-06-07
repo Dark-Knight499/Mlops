@@ -1,0 +1,47 @@
+random_state: 42
+
+data_ingestion:
+  n_samples: 2200
+  output_path: data/raw/churn.csv
+
+data_validation:
+  input_path: data/raw/churn.csv
+  output_path: data/validated/churn.csv
+  report_path: artifacts/validation/report.json
+  required_columns:
+    - tenure_months
+    - monthly_charges
+    - total_charges
+    - support_tickets
+    - contract_months
+    - streaming_usage_gb
+    - payment_delay_days
+    - service_calls_last_quarter
+    - churn
+
+data_preprocessing:
+  input_path: data/validated/churn.csv
+  test_size: 0.2
+  train_output_path: data/processed/train.csv
+  test_output_path: data/processed/test.csv
+
+feature_engineering:
+  train_input_path: data/processed/train.csv
+  test_input_path: data/processed/test.csv
+  train_output_path: data/features/train_features.csv
+  test_output_path: data/features/test_features.csv
+
+model_training:
+  input_path: data/features/train_features.csv
+  n_estimators: 300
+  max_depth: 8
+  model_output_path: models/churn_model.pkl
+  feature_columns_path: artifacts/model/feature_columns.json
+
+model_evaluation:
+  input_path: data/features/test_features.csv
+  model_path: models/churn_model.pkl
+  threshold: 0.5
+  metrics_output_path: artifacts/metrics.json
+  feature_importance_plot_path: artifacts/plots/feature_importance.png
+  confusion_matrix_plot_path: artifacts/plots/confusion_matrix.png

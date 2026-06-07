@@ -1,0 +1,265 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: uv run python -m src.main --stage data_ingestion
+    deps:
+    - path: params.yaml
+      hash: md5
+      md5: c239a7c5a4b6a096b262f4fe3b86f7d5
+      size: 1336
+    - path: src/components/data_ingestion.py
+      hash: md5
+      md5: 1533887c20b7174fea2fa1114d2a511b
+      size: 2260
+    - path: src/main.py
+      hash: md5
+      md5: fd2e79973158d511d11fd25560a3e6f7
+      size: 910
+    - path: src/utils/logger.py
+      hash: md5
+      md5: 8b5ad3505542ed2d78cc1b357c33ca90
+      size: 227
+    params:
+      params.yaml:
+        data_ingestion:
+          n_samples: 2200
+          output_path: data/raw/churn.csv
+        random_state: 42
+    outs:
+    - path: data/raw/churn.csv
+      hash: md5
+      md5: 839e8ed8640df4ac2101e89d5f89b1b7
+      size: 95466
+  data_validation:
+    cmd: uv run python -m src.main --stage data_validation
+    deps:
+    - path: data/raw/churn.csv
+      hash: md5
+      md5: 839e8ed8640df4ac2101e89d5f89b1b7
+      size: 95466
+    - path: params.yaml
+      hash: md5
+      md5: c239a7c5a4b6a096b262f4fe3b86f7d5
+      size: 1336
+    - path: src/components/data_validation.py
+      hash: md5
+      md5: 775ddcf521230052e19ad539ac26248a
+      size: 1553
+    - path: src/main.py
+      hash: md5
+      md5: fd2e79973158d511d11fd25560a3e6f7
+      size: 910
+    - path: src/utils/io.py
+      hash: md5
+      md5: 1d800a74a20a57328616f3d1d996c5af
+      size: 481
+    - path: src/utils/logger.py
+      hash: md5
+      md5: 8b5ad3505542ed2d78cc1b357c33ca90
+      size: 227
+    params:
+      params.yaml:
+        data_validation:
+          input_path: data/raw/churn.csv
+          output_path: data/validated/churn.csv
+          report_path: artifacts/validation/report.json
+          required_columns:
+          - tenure_months
+          - monthly_charges
+          - total_charges
+          - support_tickets
+          - contract_months
+          - streaming_usage_gb
+          - payment_delay_days
+          - service_calls_last_quarter
+          - churn
+    outs:
+    - path: artifacts/validation/report.json
+      hash: md5
+      md5: 37776efd22cb121535aa76306c5513bd
+      size: 114
+    - path: data/validated/churn.csv
+      hash: md5
+      md5: 839e8ed8640df4ac2101e89d5f89b1b7
+      size: 95466
+  data_preprocessing:
+    cmd: uv run python -m src.main --stage data_preprocessing
+    deps:
+    - path: data/validated/churn.csv
+      hash: md5
+      md5: 839e8ed8640df4ac2101e89d5f89b1b7
+      size: 95466
+    - path: params.yaml
+      hash: md5
+      md5: c239a7c5a4b6a096b262f4fe3b86f7d5
+      size: 1336
+    - path: src/components/data_preprocessing.py
+      hash: md5
+      md5: 9d87051243c9d38de817af16ad095d6e
+      size: 1209
+    - path: src/main.py
+      hash: md5
+      md5: fd2e79973158d511d11fd25560a3e6f7
+      size: 910
+    - path: src/utils/logger.py
+      hash: md5
+      md5: 8b5ad3505542ed2d78cc1b357c33ca90
+      size: 227
+    params:
+      params.yaml:
+        data_preprocessing:
+          input_path: data/validated/churn.csv
+          test_size: 0.2
+          train_output_path: data/processed/train.csv
+          test_output_path: data/processed/test.csv
+        random_state: 42
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: a1092a8fd04ef555b05d551f6e117757
+      size: 19235
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 9af792acb70811b15d85ec2ec72d8838
+      size: 76378
+  feature_engineering:
+    cmd: uv run python -m src.main --stage feature_engineering
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: a1092a8fd04ef555b05d551f6e117757
+      size: 19235
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 9af792acb70811b15d85ec2ec72d8838
+      size: 76378
+    - path: params.yaml
+      hash: md5
+      md5: c239a7c5a4b6a096b262f4fe3b86f7d5
+      size: 1336
+    - path: src/components/feature_engineering.py
+      hash: md5
+      md5: 84b48a3a8b21079304cfcd8cadb110a4
+      size: 1611
+    - path: src/main.py
+      hash: md5
+      md5: fd2e79973158d511d11fd25560a3e6f7
+      size: 910
+    - path: src/utils/logger.py
+      hash: md5
+      md5: 8b5ad3505542ed2d78cc1b357c33ca90
+      size: 227
+    params:
+      params.yaml:
+        feature_engineering:
+          train_input_path: data/processed/train.csv
+          test_input_path: data/processed/test.csv
+          train_output_path: data/features/train_features.csv
+          test_output_path: data/features/test_features.csv
+    outs:
+    - path: data/features/test_features.csv
+      hash: md5
+      md5: 21dc794e5830c6f515161275a80ce0a0
+      size: 26742
+    - path: data/features/train_features.csv
+      hash: md5
+      md5: 444afdcf88c163149014a3b8dc8e250e
+      size: 106169
+  model_training:
+    cmd: uv run python -m src.main --stage model_training
+    deps:
+    - path: data/features/train_features.csv
+      hash: md5
+      md5: 444afdcf88c163149014a3b8dc8e250e
+      size: 106169
+    - path: params.yaml
+      hash: md5
+      md5: c239a7c5a4b6a096b262f4fe3b86f7d5
+      size: 1336
+    - path: src/components/model_training.py
+      hash: md5
+      md5: b251b156368a7c4520ae296a4f4cc713
+      size: 1345
+    - path: src/main.py
+      hash: md5
+      md5: fd2e79973158d511d11fd25560a3e6f7
+      size: 910
+    - path: src/utils/io.py
+      hash: md5
+      md5: 1d800a74a20a57328616f3d1d996c5af
+      size: 481
+    - path: src/utils/logger.py
+      hash: md5
+      md5: 8b5ad3505542ed2d78cc1b357c33ca90
+      size: 227
+    params:
+      params.yaml:
+        model_training:
+          input_path: data/features/train_features.csv
+          n_estimators: 300
+          max_depth: 8
+          model_output_path: models/churn_model.pkl
+          feature_columns_path: artifacts/model/feature_columns.json
+        random_state: 42
+    outs:
+    - path: artifacts/model/feature_columns.json
+      hash: md5
+      md5: fd9355df0be27d191a022a15ea087217
+      size: 311
+    - path: models/churn_model.pkl
+      hash: md5
+      md5: 2bcbabe97436c0ba277e0a8d4df12c25
+      size: 3945194
+  model_evaluation:
+    cmd: uv run python -m src.main --stage model_evaluation
+    deps:
+    - path: data/features/test_features.csv
+      hash: md5
+      md5: 21dc794e5830c6f515161275a80ce0a0
+      size: 26742
+    - path: models/churn_model.pkl
+      hash: md5
+      md5: 2bcbabe97436c0ba277e0a8d4df12c25
+      size: 3945194
+    - path: params.yaml
+      hash: md5
+      md5: c239a7c5a4b6a096b262f4fe3b86f7d5
+      size: 1336
+    - path: src/components/model_evaluation.py
+      hash: md5
+      md5: c155f05be4ef7999444ad983e17738fb
+      size: 2709
+    - path: src/main.py
+      hash: md5
+      md5: fd2e79973158d511d11fd25560a3e6f7
+      size: 910
+    - path: src/utils/io.py
+      hash: md5
+      md5: 1d800a74a20a57328616f3d1d996c5af
+      size: 481
+    - path: src/utils/logger.py
+      hash: md5
+      md5: 8b5ad3505542ed2d78cc1b357c33ca90
+      size: 227
+    params:
+      params.yaml:
+        model_evaluation:
+          input_path: data/features/test_features.csv
+          model_path: models/churn_model.pkl
+          threshold: 0.5
+          metrics_output_path: artifacts/metrics.json
+          feature_importance_plot_path: artifacts/plots/feature_importance.png
+          confusion_matrix_plot_path: artifacts/plots/confusion_matrix.png
+    outs:
+    - path: artifacts/metrics.json
+      hash: md5
+      md5: a9ade45da28b49d51fc6ca57c998028a
+      size: 110
+    - path: artifacts/plots/confusion_matrix.png
+      hash: md5
+      md5: 71a42b44ae3ce833aebd5895c04206d6
+      size: 35822
+    - path: artifacts/plots/feature_importance.png
+      hash: md5
+      md5: bd61c751ce0af44e665b30a7da6e9fca
+      size: 74009

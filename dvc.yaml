@@ -1,0 +1,91 @@
+stages:
+  data_ingestion:
+    cmd: uv run python -m src.main --stage data_ingestion
+    deps:
+      - src/main.py
+      - src/components/data_ingestion.py
+      - src/utils/logger.py
+      - params.yaml
+    params:
+      - random_state
+      - data_ingestion
+    outs:
+      - data/raw/churn.csv
+
+  data_validation:
+    cmd: uv run python -m src.main --stage data_validation
+    deps:
+      - src/main.py
+      - src/components/data_validation.py
+      - src/utils/io.py
+      - src/utils/logger.py
+      - data/raw/churn.csv
+      - params.yaml
+    params:
+      - data_validation
+    outs:
+      - data/validated/churn.csv
+      - artifacts/validation/report.json
+
+  data_preprocessing:
+    cmd: uv run python -m src.main --stage data_preprocessing
+    deps:
+      - src/main.py
+      - src/components/data_preprocessing.py
+      - src/utils/logger.py
+      - data/validated/churn.csv
+      - params.yaml
+    params:
+      - random_state
+      - data_preprocessing
+    outs:
+      - data/processed/train.csv
+      - data/processed/test.csv
+
+  feature_engineering:
+    cmd: uv run python -m src.main --stage feature_engineering
+    deps:
+      - src/main.py
+      - src/components/feature_engineering.py
+      - src/utils/logger.py
+      - data/processed/train.csv
+      - data/processed/test.csv
+      - params.yaml
+    params:
+      - feature_engineering
+    outs:
+      - data/features/train_features.csv
+      - data/features/test_features.csv
+
+  model_training:
+    cmd: uv run python -m src.main --stage model_training
+    deps:
+      - src/main.py
+      - src/components/model_training.py
+      - src/utils/io.py
+      - src/utils/logger.py
+      - data/features/train_features.csv
+      - params.yaml
+    params:
+      - random_state
+      - model_training
+    outs:
+      - models/churn_model.pkl
+      - artifacts/model/feature_columns.json
+
+  model_evaluation:
+    cmd: uv run python -m src.main --stage model_evaluation
+    deps:
+      - src/main.py
+      - src/components/model_evaluation.py
+      - src/utils/io.py
+      - src/utils/logger.py
+      - data/features/test_features.csv
+      - models/churn_model.pkl
+      - params.yaml
+    params:
+      - model_evaluation
+    outs:
+      - artifacts/metrics.json
+      - artifacts/plots/feature_importance.png
+      - artifacts/plots/confusion_matrix.png
